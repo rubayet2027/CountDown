@@ -1,58 +1,41 @@
-document.addEventListener("DOMContentLoaded", () => {
-    let countdownItems = document.querySelectorAll(".countdown-item");
-    let progressBar = document.getElementById("progress-bar");
-    let startButton = document.querySelector("button");
+const endDate = new Date("4 April, 2025 22:24:00").getTime();
+const startDate = new Date().getTime();
 
-    let countdownInterval;
-    let totalTime, timeRemaining;
+let x  = setInterval(function updateTimer() {
+    const now = new Date().getTime();
 
-    startButton.addEventListener("click", () => {
-        let minutes = parseInt(countdownItems[2].textContent.trim()) || 0;
-        let seconds = parseInt(countdownItems[3].textContent.trim()) || 0;
+    const distanceCovered = now - startDate;
+    const distancePending = endDate - now;
+    const totalDistance = endDate - startDate;
 
-        // Validate input
-        if (minutes < 0 || seconds < 0 || (minutes === 0 && seconds === 0)) {
-            alert("Please enter a valid time in the boxes!");
-            return;
-        }
+    const percetageDistance  = (distanceCovered/totalDistance)*100;
 
-        // Convert time to seconds
-        totalTime = minutes * 60 + seconds;
-        timeRemaining = totalTime;
+    //set width for progress bar 
+    document.getElementById("progress-bar").style.width = percetageDistance + "%";
 
-        // Start Countdown
-        startCountdown();
-    });
-
-    function startCountdown() {
-        clearInterval(countdownInterval);
-
-        countdownInterval = setInterval(() => {
-            if (timeRemaining <= 0) {
-                clearInterval(countdownInterval);
-                alert("Time's Up!");
-                return;
-            }
-
-            updateUI();
-            timeRemaining--;
-        }, 1000);
+    if(distancePending < 0 ) {
+        clearInterval(x);
+        document.getElementById("countdown").innerHTML = "EXPIRED";
+        document.getElementById("progress-bar").style.width = "100%";
     }
+    const oneDayInMillis = (24 * 60 * 60 * 1000);
+    const oneHourInMillis  = (60 * 60 * 1000);
+    const oneMinInMIllis = (60*1000);
+    const oneSecondInMillis = (1000);
 
-    function updateUI() {
-        let days = Math.floor(timeRemaining / (24 * 3600));
-        let hours = Math.floor((timeRemaining % (24 * 3600)) / 3600);
-        let minutes = Math.floor((timeRemaining % 3600) / 60);
-        let seconds = timeRemaining % 60;
+    const days = Math.floor(distancePending / (oneDayInMillis));
 
-        // Update countdown boxes
-        countdownItems[0].textContent = String(days).padStart(2, "0");
-        countdownItems[1].textContent = String(hours).padStart(2, "0");
-        countdownItems[2].textContent = String(minutes).padStart(2, "0");
-        countdownItems[3].textContent = String(seconds).padStart(2, "0");
+    const hrs = Math.floor((distancePending%(oneDayInMillis) / (oneHourInMillis)));
 
-        // Update progress bar
-        let progressPercent = ((totalTime - timeRemaining) / totalTime) * 100;
-        progressBar.style.width = `${progressPercent}%`;
-    }
-});
+    const mins = Math.floor((distancePending%(oneHourInMillis))/(oneMinInMIllis));
+
+    const secs = Math.floor((distancePending%(oneMinInMIllis))/(oneSecondInMillis));
+
+    document.getElementById("days").innerHTML = days;
+    document.getElementById("hours").innerHTML = hrs;
+    document.getElementById("minutes").innerHTML = mins;
+    document.getElementById("seconds").innerHTML = secs;
+
+    
+}
+, 1000);

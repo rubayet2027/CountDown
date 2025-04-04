@@ -109,7 +109,7 @@ button:hover img {
 }
 
 /* Progress Bar */
-.progress-bar {
+.progress-container {
     width: 100%;
     height: 15px;
     background-color: #e0e0e0;
